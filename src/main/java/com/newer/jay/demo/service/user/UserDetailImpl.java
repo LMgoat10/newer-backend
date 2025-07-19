@@ -3,9 +3,11 @@ package com.newer.jay.demo.service.user;
 import com.newer.jay.demo.entity.User;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 
 @Data
 public class UserDetailImpl implements UserDetails {
@@ -22,10 +24,14 @@ public class UserDetailImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+
         // 为用户提供ROLE_USER权限
         return java.util.Collections.singletonList(
             new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_USER")
         );
+
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+
     }
 
     @Override

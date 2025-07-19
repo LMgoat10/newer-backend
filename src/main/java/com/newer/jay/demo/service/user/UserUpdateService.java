@@ -8,6 +8,8 @@ import jakarta.annotation.Resource;
 
 import java.util.Map;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +21,9 @@ public class UserUpdateService {
     @Resource
     private UserMapper userMapper;
 
-    public Map<String, Object> updateUser(User loginuser, String name, String email, String password, String phone, String avatarFileName) {
+    public Map<String, Object> updateUser(String name, String email, String password, String phone, String avatarFileName) {
+        UsernamePasswordAuthenticationToken authenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        UserDetailImpl loginUser = (UserDetailImpl) authenticationToken.getPrincipal();
         try {    
             // 验证邮箱格式
             if (!isValidEmail(email)) {
@@ -45,7 +49,7 @@ public class UserUpdateService {
                 return Map.of("status", 1, "message", "用户名已被占用");
             }
             QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("user_id", loginuser.getUserId());
+            queryWrapper.eq("user_id", loginUser.getUser().getUserId());
             User user = userMapper.selectOne(queryWrapper);
             if(name != null && !name.isEmpty()) {
                 user.setName(name);

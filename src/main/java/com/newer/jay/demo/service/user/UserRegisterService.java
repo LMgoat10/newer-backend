@@ -76,8 +76,8 @@ public class UserRegisterService {
             user.setAvatarFileName(avatarFileName);
             user.setMemberLevel("普通会员");
             user.setJoinDate(new Date());
-            user.setTotalTrips(0);
-            user.setPoints(0);
+            user.setTotalOrders(0);
+            user.setBalance(0.0);
 
             // 保存用户
             int result = userMapper.insert(user);

@@ -32,9 +32,12 @@ public class UserLoginService {
         userDTO.setPhone(user.getPhone());
         userDTO.setAvatarFileName(user.getAvatarFileName());
         userDTO.setMemberLevel(user.getMemberLevel());
+        userDTO.setMemberPoints(user.getMemberPoints());
         userDTO.setJoinDate(user.getJoinDate());
-        userDTO.setTotalTrips(user.getTotalTrips());
-        userDTO.setPoints(user.getPoints());
+        userDTO.setTotalOrders(user.getTotalOrders());
+        userDTO.setBalance(user.getBalance());
+        userDTO.setIdCard(user.getIdCard());
+        userDTO.setAddress(user.getAddress());
 
         LoginResponseDTO responseDTO = new LoginResponseDTO();
         responseDTO.setStatus(200);

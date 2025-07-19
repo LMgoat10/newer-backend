@@ -15,7 +15,10 @@ public class UserDTO {
     private String phone;
     private String avatarFileName;
     private String memberLevel;
+    private Integer memberPoints;
     private Date joinDate;
-    private Integer totalTrips;
-    private Integer points;
+    private String idCard;
+    private String address;
+    private Integer totalOrders;
+    private Double balance;
 }

@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -23,14 +22,10 @@ public class User {
     private String hashedPassword;
     private String avatarFileName;
     private String memberLevel;
+    private Integer memberPoints;
     private Date joinDate;
-    private Integer totalTrips;
-    private Integer points;
-    
-    @Data
-    public static class Preferences{
-        private String language;
-        private String currency;
-        private Map<String, Boolean> notificationSettings;
-    }
+    private String idCard;
+    private String address;
+    private Integer totalOrders;
+    private Double balance;
 }

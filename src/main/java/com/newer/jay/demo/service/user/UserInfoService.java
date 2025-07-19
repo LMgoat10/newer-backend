@@ -27,9 +27,13 @@ public class UserInfoService {
         userDTO.setPhone(user.getPhone());
         userDTO.setAvatarFileName(user.getAvatarFileName());
         userDTO.setMemberLevel(user.getMemberLevel());
+        userDTO.setMemberPoints(user.getMemberPoints());
         userDTO.setJoinDate(user.getJoinDate());
-        userDTO.setTotalTrips(user.getTotalTrips());
-        userDTO.setPoints(user.getPoints());
+        userDTO.setTotalOrders(user.getTotalOrders());
+        userDTO.setBalance(user.getBalance());
+        userDTO.setIdCard(user.getIdCard());
+        userDTO.setAddress(user.getAddress());
+
         userInfo.setStatus(200);
         userInfo.setMessage("OK");
         userInfo.setToken(null); // No token needed for user info retrieval

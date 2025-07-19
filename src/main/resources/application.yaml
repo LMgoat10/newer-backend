@@ -4,3 +4,30 @@ spring:
     prefix: classpath:/templates/
     suffix: .html
     cache: false
+  datasource:
+    url: jdbc:mysql://localhost:3306/newer?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 180214
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+      table-prefix: t_
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+logging:
+  level:
+    com.newer.jay.demo: debug
+    org.springframework.web: info
+    org.springframework.security: debug
+    org.springframework.jdbc.core: debug
+
+jwt:
+  secret: 6E5A7234753778214125442A472D4B6150645367566B59703373367639792F423F4528482B4D6251655468576D5A7134
+  expiration: 86400000  # 24小时过期

@@ -24,6 +24,9 @@ public class SecurityConfig {
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
     
     @Autowired
+    private AdminAuthenticationTokenFilter adminAuthenticationTokenFilter;
+    
+    @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
     @Autowired
@@ -61,6 +64,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         // 允许所有OPTIONS请求
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // 管理员API需要ADMIN权限
+                        .requestMatchers("/api/admin/**").hasAnyAuthority("ROLE_ADMIN", "ADMIN")
                         // 允许直接访问授权登录接口
                         .requestMatchers(HttpMethod.POST, "/api/auth/*").permitAll()
                         // 允许测试接口（不需要认证）
@@ -71,7 +76,8 @@ public class SecurityConfig {
                         .requestMatchers("/**").hasAnyAuthority("ROLE_USER")
                         // 允许任意请求被已登录用户访问，不检查Authority
                         .anyRequest().authenticated())
-                // 加我们自定义的过滤器，替代UsernamePasswordAuthenticationFilter
+                // 先添加管理员过滤器，再添加JWT过滤器
+                .addFilterBefore(adminAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -24,6 +25,9 @@ public class SecurityConfig {
     
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
+
+    @Autowired
+    private CorsConfigurationSource corsConfigurationSource;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -48,6 +52,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                // 启用 CORS
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 // 禁用 CSRF 保护
                 .csrf(csrf -> csrf.disable())
                 // 前后端分离是无状态的，不需要session了，直接禁用。
@@ -57,9 +63,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         // 允许直接访问授权登录接口
                         .requestMatchers(HttpMethod.POST, "/api/auth/*").permitAll()
+                        // 允许测试接口（不需要认证）
+                        .requestMatchers("/api/test/**").permitAll()
                         // 允许 SpringMVC 的默认错误地址匿名访问
                         .requestMatchers("/", "/error", "/api/auth/login", "/api/auth/register", "/api/auth/me", "/api/auth/check-email", "/api/upload/avatar").permitAll()
-                        // 其他所有接口必须有Authority信息，Authority在登录成功后的UserDetailsImpl对象中默认设置“ROLE_USER”
+                        // 其他所有接口必须有Authority信息，Authority在登录成功后的UserDetailsImpl对象中默认设置"ROLE_USER"
                         .requestMatchers("/**").hasAnyAuthority("ROLE_USER")
                         // 允许任意请求被已登录用户访问，不检查Authority
                         .anyRequest().authenticated())

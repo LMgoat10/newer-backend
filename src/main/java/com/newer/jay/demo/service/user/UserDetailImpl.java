@@ -22,7 +22,10 @@ public class UserDetailImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        // 为用户提供ROLE_USER权限
+        return java.util.Collections.singletonList(
+            new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_USER")
+        );
     }
 
     @Override

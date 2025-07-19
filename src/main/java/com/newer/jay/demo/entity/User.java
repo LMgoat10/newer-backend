@@ -12,9 +12,9 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName(value = "user", autoResultMap = true)
+@TableName(value = "user")
 public class User {
-    @TableId(type = IdType.AUTO)
+    @TableId(value = "user_id", type = IdType.AUTO)
     private Long userId;
     
     private String name;

@@ -21,7 +21,6 @@ public class UserAvatarUploadService {
     @Value("${upload.path}")
     private String uploadPath;
 
-    @SuppressWarnings("null")
     public Map<String, Object> uploadAvatar(MultipartFile avatar) throws IOException {
         // 验证文件是否为空
         if (avatar.isEmpty()) {

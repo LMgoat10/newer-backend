@@ -26,6 +26,14 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
+        String requestURI = request.getRequestURI();
+        
+        // 管理员API由专门的过滤器处理，这里跳过
+        if (requestURI.startsWith("/api/admin/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
         String token = request.getHeader("Authorization");
 
         if (!StringUtils.hasText(token) || !token.startsWith("Bearer ")) {
@@ -40,13 +48,17 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             Claims claims = JwtUtil.parseJWT(token);
             userId = claims.getSubject();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            System.err.println("JWT parsing failed: " + e.getMessage());
+            filterChain.doFilter(request, response);
+            return;
         }
 
         User user = userMapper.selectById(Integer.parseInt(userId));
 
         if (user == null) {
-            throw new RuntimeException("用户不存在");
+            System.err.println("User not found for ID: " + userId);
+            filterChain.doFilter(request, response);
+            return;
         }
 
         UserDetailImpl loginUser = new UserDetailImpl(user);

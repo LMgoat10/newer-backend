@@ -70,6 +70,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/auth/*").permitAll()
                         // 允许测试接口（不需要认证）
                         .requestMatchers("/api/test/**").permitAll()
+                        // 允许景点相关接口匿名访问
+                        .requestMatchers("/api/attractions", "/api/attractions/**").permitAll()
+                        // 允许购物车接口（需要用户认证，但暂时允许匿名访问用于测试）
+                        .requestMatchers("/api/cart/**").permitAll()
                         // 允许 SpringMVC 的默认错误地址匿名访问
                         .requestMatchers("/", "/error", "/api/auth/login", "/api/auth/register", "/api/auth/me", "/api/auth/check-email", "/api/upload/avatar").permitAll()
                         // 其他所有接口必须有Authority信息，Authority在登录成功后的UserDetailsImpl对象中默认设置"ROLE_USER"

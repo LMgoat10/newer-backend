@@ -28,13 +28,16 @@ public class AdminAuthenticationTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
+        System.out.println("AdminAuthenticationTokenFilter: Processing request: " + request.getMethod() + " " + requestURI);
         
         // 只对管理员API路径进行拦截
-        if (!requestURI.startsWith("/api/admin/")) {
+        if (!requestURI.startsWith("/api/admin/") && !requestURI.startsWith("/api/attractions/admin")) {
+            System.out.println("AdminAuthenticationTokenFilter: Skipping non-admin request: " + requestURI);
             filterChain.doFilter(request, response);
             return;
         }
         
+        System.out.println("AdminAuthenticationTokenFilter: Processing admin API request: " + requestURI);
         String token = request.getHeader("Authorization");
 
         if (!StringUtils.hasText(token) || !token.startsWith("Bearer ")) {

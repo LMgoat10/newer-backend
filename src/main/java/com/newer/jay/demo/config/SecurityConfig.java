@@ -66,23 +66,25 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         // 管理员API需要ADMIN权限
                         .requestMatchers("/api/admin/**").hasAnyAuthority("ROLE_ADMIN", "ADMIN")
+                        // 景点管理API需要ADMIN权限
+                        .requestMatchers("/api/attractions/admin/**").hasAnyAuthority("ROLE_ADMIN", "ADMIN")
                         // 允许直接访问授权登录接口
                         .requestMatchers(HttpMethod.POST, "/api/auth/*").permitAll()
                         // 允许测试接口（不需要认证）
                         .requestMatchers("/api/test/**").permitAll()
-                        // 允许景点相关接口匿名访问
+                        // 允许景点相关接口匿名访问（除了admin路径）
                         .requestMatchers("/api/attractions", "/api/attractions/**").permitAll()
                         // 允许购物车接口（需要用户认证，但暂时允许匿名访问用于测试）
                         .requestMatchers("/api/cart/**").permitAll()
                         // 允许 SpringMVC 的默认错误地址匿名访问
-                        .requestMatchers("/", "/error", "/api/auth/login", "/api/auth/register", "/api/auth/me", "/api/auth/check-email", "/api/upload/avatar").permitAll()
+                        .requestMatchers("/", "/error", "/api/auth/login", "/api/auth/register", "/api/auth/me", "/api/auth/check-email", "/api/upload/avatar", "/api/upload/image", "/uploads/**").permitAll()
                         // 其他所有接口必须有Authority信息，Authority在登录成功后的UserDetailsImpl对象中默认设置"ROLE_USER"
                         .requestMatchers("/**").hasAnyAuthority("ROLE_USER")
                         // 允许任意请求被已登录用户访问，不检查Authority
                         .anyRequest().authenticated())
                 // 先添加管理员过滤器，再添加JWT过滤器
                 .addFilterBefore(adminAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterAfter(jwtAuthenticationTokenFilter, AdminAuthenticationTokenFilter.class);
 
         return http.build();
     }

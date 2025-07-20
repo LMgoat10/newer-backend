@@ -27,9 +27,11 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
+        System.out.println("JwtAuthenticationTokenFilter: Processing request: " + request.getMethod() + " " + requestURI);
         
         // 管理员API由专门的过滤器处理，这里跳过
-        if (requestURI.startsWith("/api/admin/")) {
+        if (requestURI.startsWith("/api/admin/") || requestURI.startsWith("/api/attractions/admin")) {
+            System.out.println("JwtAuthenticationTokenFilter: Skipping admin API request: " + requestURI);
             filterChain.doFilter(request, response);
             return;
         }

@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `attraction` (
   `province_name` varchar(50) COMMENT '省份名称',
   `area_name` varchar(50) COMMENT '区域名称',
   `price` decimal(10,2) NOT NULL COMMENT '基础门票价格（成人票）',
-  `total_tickets` int NOT NULL DEFAULT 0 COMMENT '总票数',
+  `total_tickets` int NOT NULL DEFAULT 0 COMMENT '总票数',你
   `available_tickets` int NOT NULL DEFAULT 0 COMMENT '可用票数',
   `open_time` time COMMENT '开放时间',
   `close_time` time COMMENT '关闭时间',

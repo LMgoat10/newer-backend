@@ -70,8 +70,6 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             loginUser.getAuthorities()  // 从UserDetailImpl获取权限
         );
 
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities());
-
 
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 

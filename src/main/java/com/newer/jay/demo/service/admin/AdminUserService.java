@@ -1,6 +1,6 @@
 package com.newer.jay.demo.service.admin;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.newer.jay.demo.dto.AdminUserResponseDTO;
 import com.newer.jay.demo.dto.AdminUserCreateDTO;
@@ -25,6 +25,17 @@ public class AdminUserService {
     private PasswordEncoder passwordEncoder;
 
     /**
+     * 验证手机号格式
+     */
+    private boolean isValidPhone(String phone) {
+        if (phone == null || phone.isEmpty()) {
+            return false;
+        }
+        // 简单的11位数字手机号验证
+        return phone.matches("^\\d{11}$");
+    }
+
+    /**
      * 获取用户列表（分页）
      */
     public AdminUserResponseDTO getUserList(Integer page, Integer size, String keyword) {
@@ -32,22 +43,22 @@ public class AdminUserService {
             System.out.println("AdminUserService.getUserList called with page=" + page + ", size=" + size + ", keyword=" + keyword);
             
             Page<User> userPage = new Page<>(page, size);
-            QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+            LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
             
             // 搜索条件
             if (keyword != null && !keyword.trim().isEmpty()) {
                 queryWrapper.and(wrapper -> wrapper
-                    .like("name", keyword)
+                    .like(User::getName, keyword)
                     .or()
-                    .like("email", keyword)
+                    .like(User::getEmail, keyword)
                     .or()
-                    .like("phone", keyword)
+                    .like(User::getPhone, keyword)
                 );
                 System.out.println("Added search keyword: " + keyword);
             }
             
-            // 按创建时间降序排列 - 使用数据库字段名
-            queryWrapper.orderByDesc("join_date");
+            // 按创建时间降序排列
+            queryWrapper.orderByDesc(User::getJoinDate);
             
             System.out.println("Executing query...");
             Page<User> result = userMapper.selectPage(userPage, queryWrapper);
@@ -85,16 +96,16 @@ public class AdminUserService {
     public AdminUserResponseDTO createUser(AdminUserCreateDTO createDTO) {
         try {
             // 检查邮箱是否已存在
-            QueryWrapper<User> emailQuery = new QueryWrapper<>();
-            emailQuery.eq("email", createDTO.getEmail());
+            LambdaQueryWrapper<User> emailQuery = new LambdaQueryWrapper<>();
+            emailQuery.eq(User::getEmail, createDTO.getEmail());
             if (userMapper.selectCount(emailQuery) > 0) {
                 return new AdminUserResponseDTO(400, "邮箱已存在", null);
             }
 
             // 检查手机号是否已存在（如果提供）
             if (createDTO.getPhone() != null && !createDTO.getPhone().isEmpty()) {
-                QueryWrapper<User> phoneQuery = new QueryWrapper<>();
-                phoneQuery.eq("phone", createDTO.getPhone());
+                LambdaQueryWrapper<User> phoneQuery = new LambdaQueryWrapper<>();
+                phoneQuery.eq(User::getPhone, createDTO.getPhone());
                 if (userMapper.selectCount(phoneQuery) > 0) {
                     return new AdminUserResponseDTO(400, "手机号已存在", null);
                 }
@@ -136,10 +147,26 @@ public class AdminUserService {
                 return new AdminUserResponseDTO(404, "用户不存在", null);
             }
 
+            // 验证手机号格式（如果提供）
+            if (updateDTO.getPhone() != null && !updateDTO.getPhone().isEmpty()) {
+                if (!isValidPhone(updateDTO.getPhone())) {
+                    return new AdminUserResponseDTO(400, "手机号格式不正确，请输入11位数字", null);
+                }
+                
+                // 检查手机号是否被其他用户使用
+                if (!updateDTO.getPhone().equals(existingUser.getPhone())) {
+                    LambdaQueryWrapper<User> phoneQuery = new LambdaQueryWrapper<>();
+                    phoneQuery.eq(User::getPhone, updateDTO.getPhone()).ne(User::getUserId, userId);
+                    if (userMapper.selectCount(phoneQuery) > 0) {
+                        return new AdminUserResponseDTO(400, "手机号已被其他用户使用", null);
+                    }
+                }
+            }
+
             // 检查邮箱是否被其他用户使用
             if (updateDTO.getEmail() != null && !updateDTO.getEmail().equals(existingUser.getEmail())) {
-                QueryWrapper<User> emailQuery = new QueryWrapper<>();
-                emailQuery.eq("email", updateDTO.getEmail()).ne("userId", userId);
+                LambdaQueryWrapper<User> emailQuery = new LambdaQueryWrapper<>();
+                emailQuery.eq(User::getEmail, updateDTO.getEmail()).ne(User::getUserId, userId);
                 if (userMapper.selectCount(emailQuery) > 0) {
                     return new AdminUserResponseDTO(400, "邮箱已被其他用户使用", null);
                 }

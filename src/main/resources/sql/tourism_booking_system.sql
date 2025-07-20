@@ -144,11 +144,11 @@ INSERT INTO `attraction` (
  '["https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=200&fit=crop"]',
  '["自然风光", "山水", "国家5A"]', 'ACTIVE');
 
--- 5. 插入测试购物车数据（假设用户ID=2，对应现有用户）
+-- 5. 插入测试购物车数据（假设用户ID=1，对应现有用户）
 INSERT INTO `cart_item` (`user_id`, `attraction_id`, `ticket_type`, `ticket_price`, `quantity`, `visit_date`) VALUES 
-(2, 1, 'adult', 60.00, 2, '2025-08-15'),
-(2, 2, 'adult', 120.00, 1, '2025-08-20'),
-(2, 1, 'student', 30.00, 1, '2025-08-15');
+(1, 1, 'adult', 60.00, 2, '2025-08-15'),
+(1, 2, 'adult', 120.00, 1, '2025-08-20'),
+(1, 1, 'student', 30.00, 1, '2025-08-15');
 
 -- 6. 插入测试订单数据
 INSERT INTO `ticket_order` (
@@ -156,10 +156,17 @@ INSERT INTO `ticket_order` (
   `contact_name`, `contact_phone`, `contact_idcard`, `address`,
   `status`, `pay_method`, `pay_time`, `pay_amount`
 ) VALUES 
-('ORDER_20250720_001', 2, 1, '2025-08-15', 2, 60.00, 120.00,
+('ORDER_20250720_001', 1, 1, '2025-08-15', 2, 60.00, 120.00,
  '张三', '13812345678', '110101199001011234', '北京市朝阳区xxx街道xxx号',
  'PAID', 'BALANCE', '2025-07-20 10:30:00', 120.00),
  
-('ORDER_20250720_002', 2, 2, '2025-08-20', 1, 120.00, 120.00,
+('ORDER_20250720_002', 1, 2, '2025-08-20', 1, 120.00, 120.00,
  '李四', '13987654321', '310101199001011234', '上海市浦东新区xxx路xxx号',
- 'TICKETED', 'ALIPAY', '2025-07-20 14:20:00', 120.00);
+ 'TICKETED', 'ALIPAY', '2025-07-20 14:20:00', 120.00),
+
+('ORDER_20250720_004', 1, 5, '2025-08-25', 2, 210.00, 420.00,
+ '王五', '13611223344', '440101199001011234', '广东省广州市天河区xxx街道xxx号',
+ 'REFUND_REQUEST', 'WECHAT', '2025-07-20 16:45:00', 420.00);
+
+-- 7. 为测试退票申请设置退票原因
+UPDATE `ticket_order` SET `refund_reason` = '因个人原因无法按时出行，申请退票退款' WHERE `id` = 'ORDER_20250720_004';

@@ -28,15 +28,33 @@ public class TicketOrderService {
     public Map<String, Object> createOrder(Integer userId, Long attractionId, LocalDate visitDate,
                                          Integer quantity, BigDecimal unitPrice, String contactName,
                                          String contactPhone, String contactIdcard, String address,
-                                         TicketOrder.PaymentMethod payMethod, BigDecimal payAmount) {
+                                         TicketOrder.PayMethod payMethod, BigDecimal payAmount) {
         try {
             // 生成订单ID
             String orderId = generateOrderId();
             
-            // 创建订单
-            TicketOrder order = new TicketOrder(orderId, userId, attractionId, visitDate, quantity,
-                                              unitPrice, contactName, contactPhone, contactIdcard,
-                                              address, payMethod, payAmount);
+            // 计算总金额
+            BigDecimal totalAmount = unitPrice.multiply(new BigDecimal(quantity));
+            
+            // 创建订单对象
+            TicketOrder order = new TicketOrder();
+            order.setId(orderId);
+            order.setUserId(userId);
+            order.setAttractionId(attractionId);
+            order.setVisitDate(visitDate);
+            order.setQuantity(quantity);
+            order.setUnitPrice(unitPrice);
+            order.setTotalAmount(totalAmount);
+            order.setContactName(contactName);
+            order.setContactPhone(contactPhone);
+            order.setContactIdcard(contactIdcard);
+            order.setAddress(address);
+            order.setPayMethod(payMethod);
+            order.setPayAmount(payAmount);
+            order.setPayTime(LocalDateTime.now());  // 设置支付时间
+            order.setStatus(TicketOrder.OrderStatus.PAID);  // 默认状态为PAID
+            order.setCreatedAt(LocalDateTime.now());
+            order.setUpdatedAt(LocalDateTime.now());
             
             ticketOrderMapper.insert(order);
             

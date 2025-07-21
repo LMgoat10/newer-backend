@@ -1,5 +1,6 @@
 package com.newer.jay.demo.controller;
 
+import com.newer.jay.demo.dto.DeductBalanceRequest;
 import com.newer.jay.demo.dto.PaymentRequest;
 import com.newer.jay.demo.dto.RechargeRequest;
 import com.newer.jay.demo.dto.RefundRequest;
@@ -169,6 +170,74 @@ public class WalletController {
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("status", 400);
+            response.put("message", e.getMessage());
+            response.put("data", null);
+            
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+    
+    /**
+     * 扣除用户余额（订单支付）
+     * POST /api/user/balance/deduct
+     */
+    @PostMapping("/balance/deduct")
+    public ResponseEntity<Map<String, Object>> deductBalance(
+            @RequestHeader("Authorization") String authorization,
+            @RequestBody DeductBalanceRequest request) {
+        
+        try {
+            // 从JWT token中获取用户ID
+            Long userId = extractUserIdFromToken(authorization);
+            
+            // 参数验证
+            if (request.getAmount() == null || request.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+                Map<String, Object> response = new HashMap<>();
+                response.put("status", 400);
+                response.put("message", "扣除金额必须大于0");
+                response.put("data", null);
+                return ResponseEntity.badRequest().body(response);
+            }
+            
+            if (request.getOrderId() == null || request.getOrderId().trim().isEmpty()) {
+                Map<String, Object> response = new HashMap<>();
+                response.put("status", 400);
+                response.put("message", "订单ID不能为空");
+                response.put("data", null);
+                return ResponseEntity.badRequest().body(response);
+            }
+            
+            // 设置默认描述
+            String description = request.getDescription();
+            if (description == null || description.trim().isEmpty()) {
+                description = "订单支付";
+            }
+            
+            // 执行扣款
+            BigDecimal newBalance = walletService.deductBalance(
+                userId,
+                request.getAmount(),
+                request.getOrderId(),
+                description
+            );
+            
+            Map<String, Object> data = new HashMap<>();
+            data.put("userId", userId);
+            data.put("orderId", request.getOrderId());
+            data.put("deductedAmount", request.getAmount());
+            data.put("newBalance", newBalance);
+            data.put("description", description);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", 0);  // 前端期望的成功状态码
+            response.put("message", "余额扣除成功");
+            response.put("data", data);
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", 1);  // 前端期望的失败状态码
             response.put("message", e.getMessage());
             response.put("data", null);
             

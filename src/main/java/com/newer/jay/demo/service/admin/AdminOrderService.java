@@ -257,7 +257,7 @@ public class AdminOrderService {
     /**
      * 获取支付方式中文名称
      */
-    private String getPayMethodName(TicketOrder.PaymentMethod payMethod) {
+    private String getPayMethodName(TicketOrder.PayMethod payMethod) {
         switch (payMethod) {
             case BALANCE: return "余额支付";
             case ALIPAY: return "支付宝";

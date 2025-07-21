@@ -99,7 +99,7 @@ public class AdminRefundService {
         }
         
         // 3. 给用户余额加钱（如果是余额支付）
-        if (order.getPayMethod() == TicketOrder.PaymentMethod.BALANCE) {
+        if (order.getPayMethod() == TicketOrder.PayMethod.BALANCE) {
             User user = userMapper.selectById(order.getUserId());
             if (user != null) {
                 user.setBalance(user.getBalance() + order.getPayAmount().doubleValue());
@@ -233,7 +233,7 @@ public class AdminRefundService {
         }
     }
 
-    private String getPayMethodName(TicketOrder.PaymentMethod method) {
+    private String getPayMethodName(TicketOrder.PayMethod method) {
         switch (method) {
             case BALANCE: return "余额支付";
             case ALIPAY: return "支付宝";

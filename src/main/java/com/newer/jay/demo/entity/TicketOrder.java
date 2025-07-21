@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @TableName("ticket_order")
 public class TicketOrder {
     @TableId
-    private String id; // 订单ID，手动生成
+    private String id; // 订单ID，手动生成，同时作为订单号
     
     private Integer userId;        // 改为Integer以匹配user表的int类型
     private Long attractionId;
@@ -35,7 +35,7 @@ public class TicketOrder {
     private OrderStatus status;
     
     // 支付信息
-    private PaymentMethod payMethod;
+    private PayMethod payMethod;
     private LocalDateTime payTime;
     private BigDecimal payAmount;
     
@@ -55,31 +55,41 @@ public class TicketOrder {
         CANCELLED       // 取消（超时未付款或用户取消）
     }
     
-    public enum PaymentMethod {
+    public enum PayMethod {
         BALANCE, ALIPAY, WECHAT
     }
     
     // 构造函数用于创建新订单
-    public TicketOrder(String orderId, Integer userId, Long attractionId, 
-                      LocalDate visitDate, Integer quantity, BigDecimal unitPrice,
-                      String contactName, String contactPhone, String contactIdcard, String address,
-                      PaymentMethod payMethod, BigDecimal payAmount) {
+    public TicketOrder(Integer userId, Long attractionId, String orderId,
+                      Integer quantity, BigDecimal unitPrice, BigDecimal totalAmount,
+                      LocalDate visitDate, String contactName, String contactPhone) {
         this.id = orderId;
         this.userId = userId;
         this.attractionId = attractionId;
-        this.visitDate = visitDate;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
-        this.totalAmount = unitPrice.multiply(BigDecimal.valueOf(quantity));
+        this.totalAmount = totalAmount;
+        this.payAmount = totalAmount; // 默认支付金额为总金额
+        this.visitDate = visitDate;
         this.contactName = contactName;
         this.contactPhone = contactPhone;
-        this.contactIdcard = contactIdcard;
-        this.address = address;
-        this.status = OrderStatus.PAID;
-        this.payMethod = payMethod;
-        this.payTime = LocalDateTime.now();
-        this.payAmount = payAmount;
+        this.status = OrderStatus.PAID;  // 默认状态改为PAID
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+    }
+    
+    // 设置支付时间的setter
+    public void setPaidAt(LocalDateTime paidAt) {
+        this.payTime = paidAt;
+    }
+    
+    // 获取支付时间的getter
+    public LocalDateTime getPaidAt() {
+        return this.payTime;
+    }
+    
+    // 获取订单号（使用ID作为订单号）
+    public String getOrderNumber() {
+        return this.id;
     }
 }

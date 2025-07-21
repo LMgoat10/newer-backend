@@ -18,7 +18,7 @@ public class UserAvatarUploadService {
      * @param avatarFile 头像文件
      * @return 上传结果
      */
-    @Value("${upload.path}")
+    @Value("${upload.path}"+"userAvatar\\")
     private String uploadPath;
 
     public Map<String, Object> uploadAvatar(MultipartFile avatar) throws IOException {

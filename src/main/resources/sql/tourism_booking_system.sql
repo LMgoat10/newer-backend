@@ -51,51 +51,42 @@ CREATE TABLE IF NOT EXISTS `cart_item` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='购物车表';
 
 -- 3. 订单表（Ticket Order）
-CREATE TABLE IF NOT EXISTS `ticket_order` (
-  `id` varchar(30) PRIMARY KEY COMMENT '订单ID',
-  `user_id` int NOT NULL COMMENT '用户ID',
-  `attraction_id` bigint NOT NULL COMMENT '景点ID',
-  `visit_date` date NOT NULL COMMENT '游玩日期',
-  `quantity` int NOT NULL DEFAULT 1 COMMENT '购票数量',
-  `unit_price` decimal(10,2) NOT NULL COMMENT '单价',
-  `total_amount` decimal(10,2) NOT NULL COMMENT '订单总金额',
-
-  -- 联系人信息
-  `contact_name` varchar(50) NULL COMMENT '联系人姓名',
-  `contact_phone` varchar(20) NULL COMMENT '联系人电话',
-  `contact_idcard` varchar(30) NULL COMMENT '联系人身份证号',
-  `address` varchar(255) NULL COMMENT '收货地址',
-
-  -- 订单状态
-  `status` enum(
-    'PAID',           -- 已支付，待放票
-    'TICKETED',       -- 已放票，订单完成
-    'REFUND_REQUEST', -- 退票申请中
-    'REFUNDED',       -- 已退款
-    'CANCELLED'       -- 取消（超时未付款或用户取消）
-  ) NOT NULL DEFAULT 'PAID' COMMENT '订单状态',
-
-  -- 支付信息
-  `pay_method` enum('BALANCE','ALIPAY','WECHAT') NOT NULL COMMENT '支付方式',
-  `pay_time` datetime NOT NULL COMMENT '支付时间',
-  `pay_amount` decimal(10,2) NOT NULL COMMENT '支付金额',
-
-  -- 退款信息
-  `refund_reason` varchar(255) NULL COMMENT '退款原因',
-  `refund_time` datetime NULL COMMENT '退款时间',
-  `refund_amount` decimal(10,2) NULL COMMENT '退款金额',
-
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-
-  INDEX `idx_user_status` (`user_id`, `status`),
-  INDEX `idx_attraction_id` (`attraction_id`),
-  INDEX `idx_status` (`status`),
-  INDEX `idx_visit_date` (`visit_date`),
-  INDEX `idx_pay_time` (`pay_time`),
-  FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`) ON DELETE CASCADE,
-  FOREIGN KEY (`attraction_id`) REFERENCES `attraction`(`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='门票订单表';
+CREATE TABLE `ticket_order` (
+    `id` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '订单ID',
+    `user_id` int NOT NULL COMMENT '用户ID',
+    `attraction_id` bigint NOT NULL COMMENT '景点ID',
+    `visit_date` date NOT NULL COMMENT '游玩日期',
+    `quantity` int NOT NULL DEFAULT '1' COMMENT '购票数量',
+    `unit_price` decimal(10, 2) NOT NULL COMMENT '单价',
+    `total_amount` decimal(10, 2) NOT NULL COMMENT '订单总金额',
+    `contact_name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '联系人姓名',
+    `contact_phone` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '联系人电话',
+    `contact_idcard` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '联系人身份证号',
+    `address` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '收货地址',
+    `status` enum(
+        'PAID',
+        'TICKETED',
+        'REFUND_REQUEST',
+        'REFUNDED',
+        'CANCELLED'
+    ) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'PAID' COMMENT '订单状态',
+    `pay_method` enum('BALANCE', 'ALIPAY', 'WECHAT') COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '支付方式',
+    `pay_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '支付时间',
+    `pay_amount` decimal(10, 2) NOT NULL COMMENT '支付金额',
+    `refund_reason` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '退款原因',
+    `refund_time` datetime DEFAULT NULL COMMENT '退款时间',
+    `refund_amount` decimal(10, 2) DEFAULT NULL COMMENT '退款金额',
+    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    KEY `idx_user_status` (`user_id`, `status`),
+    KEY `idx_attraction_id` (`attraction_id`),
+    KEY `idx_status` (`status`),
+    KEY `idx_visit_date` (`visit_date`),
+    KEY `idx_pay_time` (`pay_time`),
+    CONSTRAINT `ticket_order_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE,
+    CONSTRAINT `ticket_order_ibfk_2` FOREIGN KEY (`attraction_id`) REFERENCES `attraction` (`id`) ON DELETE CASCADE
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '门票订单表'
 
 -- 4. 插入测试景点数据
 INSERT INTO `attraction` (

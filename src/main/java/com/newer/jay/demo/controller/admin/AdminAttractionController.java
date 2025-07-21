@@ -1,10 +1,13 @@
-package com.newer.jay.demo.controller;
+package com.newer.jay.demo.controller.admin;
 
 import com.newer.jay.demo.dto.AdminAttractionResponseDTO;
 import com.newer.jay.demo.service.admin.AdminAttractionService;
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -194,6 +197,25 @@ public class AdminAttractionController {
                 "status", 500,
                 "message", "获取统计信息失败: " + e.getMessage()
             ));
+        }
+    }
+
+    /**
+     * 上传景点封面图片
+     */
+
+    @PostMapping("/upload/attractionsCover")
+    public Map<String, Object> uploadAttractionsCover(@RequestParam("cover") MultipartFile cover, HttpServletResponse response) {
+        if (cover == null || cover.isEmpty()) {
+            response.setStatus(400);
+            return Map.of("status", 1, "message", "请选择要上传的封面文件");
+        }
+
+        try {
+            return adminAttractionService.uploadAttractionsCover(cover);
+        } catch (Exception e) {
+            response.setStatus(500);
+            return Map.of("status", 1, "message", "上传失败: " + e.getMessage());
         }
     }
 }

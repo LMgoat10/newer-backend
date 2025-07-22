@@ -9,6 +9,17 @@ spring:
     username: root
     password: 180214
     driver-class-name: com.mysql.cj.jdbc.Driver
+  mail:
+    host: smtp.qq.com #这里换成自己的邮箱类型 例如qq邮箱就写smtp.qq.com
+    username: 1263154424@qq.com #QQ邮箱
+    password: bmufexssrgzshfif #邮箱密码或者授权码
+    protocol: smtp #发送邮件协议
+    properties.mail.smtp.auth: true
+    properties.mail.smtp.port: 465 #端口号465或587
+    properties.mail.smtp.starttls.enable: true
+    properties.mail.smtp.starttls.required: true
+    properties.mail.smtp.ssl.enable: true #开启SSL
+    default-encoding: utf-8
 
 alipay:
   appId: 9021000150665145

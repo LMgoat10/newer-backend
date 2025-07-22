@@ -70,6 +70,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/attractions/admin/**").hasAnyAuthority("ROLE_ADMIN", "ADMIN")
                         // 允许直接访问授权登录接口
                         .requestMatchers(HttpMethod.POST, "/api/auth/*").permitAll()
+                        // 允许邮件相关接口（包括GET和POST）
+                        .requestMatchers("/mail/**").permitAll()
                         // 允许测试接口（不需要认证）
                         .requestMatchers("/alipay/**").permitAll()
                         // 允许景点相关接口匿名访问（除了admin路径）

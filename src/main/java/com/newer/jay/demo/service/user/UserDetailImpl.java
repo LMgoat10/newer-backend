@@ -1,6 +1,8 @@
 package com.newer.jay.demo.service.user;
 
 import com.newer.jay.demo.entity.User;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

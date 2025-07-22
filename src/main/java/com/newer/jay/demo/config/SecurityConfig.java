@@ -71,7 +71,7 @@ public class SecurityConfig {
                         // 允许直接访问授权登录接口
                         .requestMatchers(HttpMethod.POST, "/api/auth/*").permitAll()
                         // 允许测试接口（不需要认证）
-                        .requestMatchers("/api/test/**").permitAll()
+                        .requestMatchers("/alipay/**").permitAll()
                         // 允许景点相关接口匿名访问（除了admin路径）
                         .requestMatchers("/api/attractions", "/api/attractions/**").permitAll()
                         // 允许 SpringMVC 的默认错误地址匿名访问

@@ -62,7 +62,8 @@ public class TicketOrder {
     // 构造函数用于创建新订单
     public TicketOrder(Integer userId, Long attractionId, String orderId,
                       Integer quantity, BigDecimal unitPrice, BigDecimal totalAmount,
-                      LocalDate visitDate, String contactName, String contactPhone) {
+                      LocalDate visitDate, String contactName, String contactPhone,
+                        PayMethod payMethod) {
         this.id = orderId;
         this.userId = userId;
         this.attractionId = attractionId;
@@ -74,6 +75,7 @@ public class TicketOrder {
         this.contactName = contactName;
         this.contactPhone = contactPhone;
         this.status = OrderStatus.PAID;  // 默认状态改为PAID
+        this.payMethod = payMethod != null ? payMethod : PayMethod.BALANCE; // 默认使用余额支付
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }

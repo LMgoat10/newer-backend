@@ -120,6 +120,17 @@
 			<version>24.1.0</version>
 			<scope>compile</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.alipay.sdk/alipay-easysdk -->
+		<dependency>
+			<groupId>com.alipay.sdk</groupId>
+			<artifactId>alipay-easysdk</artifactId>
+			<version>2.2.3</version>
+		</dependency>
+		<dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>4.40.328.ALL</version>
+		</dependency>
 	</dependencies>
 
 	<build>

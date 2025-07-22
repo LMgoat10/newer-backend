@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.newer.jay.demo.entity.TicketOrder;
+
 @Data
 public class OrderCreateRequestDTO {
     private Integer userId;              // 用户ID (JWT认证时可以从token获取)
@@ -21,6 +23,6 @@ public class OrderCreateRequestDTO {
     private String contactEmail;         // 联系人邮箱
     private String address;              // 收货地址
     
-    private String payMethod;            // 支付方式：BALANCE, ALIPAY, WECHAT
+    private TicketOrder.PayMethod payMethod;            // 支付方式：BALANCE, ALIPAY, WECHAT
     private List<Long> cartItemIds;      // 购物车项ID列表（可选）
 }

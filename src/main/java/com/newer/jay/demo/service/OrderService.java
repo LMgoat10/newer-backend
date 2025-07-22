@@ -4,6 +4,7 @@ import com.newer.jay.demo.dto.*;
 import com.newer.jay.demo.entity.Attraction;
 import com.newer.jay.demo.entity.TicketOrder;
 import com.newer.jay.demo.entity.User;
+import com.newer.jay.demo.entity.TicketOrder.PayMethod;
 import com.newer.jay.demo.mapper.AttractionMapper;
 import com.newer.jay.demo.mapper.TicketOrderMapper;
 import com.newer.jay.demo.mapper.UserMapper;
@@ -58,6 +59,14 @@ public class OrderService {
         // 4. 生成订单号
         String orderNumber = generateOrderNumber();
 
+        PayMethod payMethod = requestDTO.getPayMethod();
+
+        if(requestDTO.getPayMethod() != null) {
+            payMethod = requestDTO.getPayMethod();
+        } else {    
+            payMethod = TicketOrder.PayMethod.BALANCE; // 默认使用余额
+        }
+
         // 5. 创建订单
         TicketOrder order = new TicketOrder(
             requestDTO.getUserId(),
@@ -68,7 +77,8 @@ public class OrderService {
             totalAmount,
             requestDTO.getVisitDate(),
             requestDTO.getContactName(),
-            requestDTO.getContactPhone()
+            requestDTO.getContactPhone(),
+            payMethod
         );
 
         // 6. 保存订单
